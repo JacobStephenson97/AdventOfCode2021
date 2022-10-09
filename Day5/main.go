@@ -17,16 +17,24 @@ func main() {
 	for _, line := range inputArr {
 		pointArr := parseLine(line)
 		for _, point := range pointArr {
-			diagram[point[0]][point[1]]++
+			diagram[point[1]][point[0]]++
 		}
 	}
-	println(diagram)
+	count := 0
+	for _, line := range diagram {
+		for _, point := range line {
+			if point > 1 {
+				count++
+			}
+		}
+	}
+	println(count)
 }
 
 func createDiagram(input string) [][]int {
-	diagram := make([][]int, 10)
+	diagram := make([][]int, getMaxNumber(input)+1)
 	for i := range diagram {
-		diagram[i] = make([]int, 10)
+		diagram[i] = make([]int, getMaxNumber(input)+1)
 	}
 	return diagram
 }
@@ -72,4 +80,23 @@ func parsePoint(point string) (int, int) {
 	x, _ := strconv.Atoi(coords[0])
 	y, _ := strconv.Atoi(coords[1])
 	return x, y
+}
+func getMaxNumber(input string) int {
+	max := 0
+	inputArr := strings.Split(input, "\r\n")
+	for _, line := range inputArr {
+		coords := strings.Split(line, " ")
+		pointOne := coords[0]
+		pointTwo := coords[2]
+		for _, point := range []string{pointOne, pointTwo} {
+			x, y := parsePoint(point)
+			if x > max {
+				max = x
+			}
+			if y > max {
+				max = y
+			}
+		}
+	}
+	return max
 }
