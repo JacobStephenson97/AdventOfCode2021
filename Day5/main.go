@@ -11,11 +11,36 @@ import (
 var input string
 
 func main() {
+	dayOne(input)
+	dayTwo(input)
+}
+
+func dayOne(input string) {
 	diagram := createDiagram(input)
 	inputArr := strings.Split(input, "\r\n")
 
 	for _, line := range inputArr {
-		pointArr := parseLine(line)
+		pointArr := parseLine(line, 1)
+		for _, point := range pointArr {
+			diagram[point[1]][point[0]]++
+		}
+	}
+	count := 0
+	for _, line := range diagram {
+		for _, point := range line {
+			if point > 1 {
+				count++
+			}
+		}
+	}
+	println(count)
+}
+func dayTwo(input string) {
+	diagram := createDiagram(input)
+	inputArr := strings.Split(input, "\r\n")
+
+	for _, line := range inputArr {
+		pointArr := parseLine(line, 2)
 		for _, point := range pointArr {
 			diagram[point[1]][point[0]]++
 		}
@@ -39,7 +64,7 @@ func createDiagram(input string) [][]int {
 	return diagram
 }
 
-func parseLine(line string) [][]int {
+func parseLine(line string, day int) [][]int {
 	coords := strings.Split(line, " ")
 	pointOne := coords[0]
 	pointTwo := coords[2]
@@ -52,7 +77,7 @@ func parseLine(line string) [][]int {
 		length := int(math.Abs(float64(y1) - float64(y2)))
 		pointArr := make([][]int, length+1)
 
-		for i, _ := range pointArr {
+		for i := range pointArr {
 			if y1 <= y2 {
 				pointArr[i] = []int{x1, y1 + i}
 			} else {
@@ -63,11 +88,27 @@ func parseLine(line string) [][]int {
 	} else if y1 == y2 {
 		length := int(math.Abs(float64(x1) - float64(x2)))
 		pointArr := make([][]int, length+1)
-		for i, _ := range pointArr {
+		for i := range pointArr {
 			if x1 <= x2 {
 				pointArr[i] = []int{x1 + i, y1}
 			} else {
 				pointArr[i] = []int{x1 - i, y1}
+			}
+		}
+		return pointArr
+	} else if day == 2 {
+		length := int(math.Abs(float64(x1) - float64(x2)))
+		pointArr := make([][]int, length+1)
+
+		for i := range pointArr {
+			if x1 < x2 && y1 < y2 {
+				pointArr[i] = []int{x1 + i, y1 + i}
+			} else if x1 < x2 && y1 > y2 {
+				pointArr[i] = []int{x1 + i, y1 - i}
+			} else if x1 > x2 && y1 < y2 {
+				pointArr[i] = []int{x1 - i, y1 + i}
+			} else if x1 > x2 && y1 > y2 {
+				pointArr[i] = []int{x1 - i, y1 - i}
 			}
 		}
 		return pointArr
